@@ -18,7 +18,7 @@ public class LocationInfoController {
     }
     @RequestMapping(value = "{country}/{city}/{description}", method = RequestMethod.GET)
     @ResponseBody
-    public List<LocationInfo> getLocationInformation(@PathVariable String country, @PathVariable String city, @PathVariable String description) {
+    public List<List<LocationInfo>> getLocationInformation(@PathVariable String country, @PathVariable String city, @PathVariable String description) {
         return locationService.getLocationInformation(country, city, description);
     }
 }

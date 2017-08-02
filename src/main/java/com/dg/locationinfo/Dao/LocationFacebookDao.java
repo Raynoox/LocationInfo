@@ -1,11 +1,9 @@
 package com.dg.locationinfo.Dao;
 
 import com.dg.locationinfo.Services.ClientConnectionService;
-import com.dg.locationinfo.Services.FacebookClientConnectionService;
 import com.restfb.Connection;
 import com.restfb.DefaultFacebookClient;
 import com.restfb.Parameter;
-import com.restfb.types.Category;
 import com.restfb.types.Place;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -22,7 +20,7 @@ public class LocationFacebookDao {
 
     private final ClientConnectionService<DefaultFacebookClient> service;
     @Autowired
-    public LocationFacebookDao(FacebookClientConnectionService service) {
+    public LocationFacebookDao(ClientConnectionService<DefaultFacebookClient> service) {
         this.service = service;
     }
     public List<Place> getData(String query) {

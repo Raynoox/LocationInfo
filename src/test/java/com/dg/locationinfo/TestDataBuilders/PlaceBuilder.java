@@ -9,7 +9,10 @@ public class PlaceBuilder {
     private Double longitude;
     private String country;
     private String city;
+    private String locationAsString = "";
 
+    private final String CITY_ID = "\"city_id\":";
+    private final String FIELD_SUFFIX = ",";
     public PlaceBuilder withName(String name) {
         this.name = name;
         return this;
@@ -30,7 +33,10 @@ public class PlaceBuilder {
         this.country = country;
         return this;
     }
-
+    public PlaceBuilder withCityId(Integer cityId) {
+        this.locationAsString = this.locationAsString.concat(CITY_ID+String.valueOf(cityId)+FIELD_SUFFIX);
+        return this;
+    }
     public Place build() {
         Location location = new Location();
         location.setLatitude(latitude);
@@ -40,6 +46,7 @@ public class PlaceBuilder {
         Place place = new Place();
         place.setLocation(location);
         place.setName(name);
+        place.setLocationAsString(locationAsString);
         return place;
     }
 }

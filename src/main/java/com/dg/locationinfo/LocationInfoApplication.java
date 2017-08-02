@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class LocationinfoApplication {
+public class LocationInfoApplication {
 
 	public static void main(String[] args) {
 
-        SpringApplication.run(LocationinfoApplication.class, args);
+        SpringApplication.run(LocationInfoApplication.class, args);
     }
 }

@@ -9,15 +9,16 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.logging.Logger;
 
-@Service
+@Service("facebookService")
 public class FacebookClientConnectionService implements ClientConnectionService<DefaultFacebookClient> {
     private final String appID;
     private final String appSecret;
-
+    private final String FB_API_INITIALIZED = "FB API INITIALIZED";
+    private final String FB_API_NOT_INITIALIZED = "FB CANNOT INITIALIZE";
     private DefaultFacebookClient client;
-    private static final Logger logger = Logger.getLogger(String.valueOf(FacebookClientConnectionService.class));
+    private static final Logger logger = Logger.getLogger(FacebookClientConnectionService.class.getName());
 
-    public FacebookClientConnectionService(@Value("${AppID}") String appID,@Value("${AppSecret}") String appSecret) {
+    public FacebookClientConnectionService(@Value("${dg.appId}") String appID,@Value("${dg.appSecret}") String appSecret) {
         this.appID = appID;
         this.appSecret = appSecret;
     }
@@ -30,9 +31,9 @@ public class FacebookClientConnectionService implements ClientConnectionService<
 
     public void logClientStatus() {
         if(this.getClient() != null) {
-            logger.info("FB API INITIALIZED");
+            logger.info(FB_API_INITIALIZED);
         } else {
-            logger.severe("FB CANNOT INITIALIZE");
+            logger.severe(FB_API_NOT_INITIALIZED);
         }
     }
 
