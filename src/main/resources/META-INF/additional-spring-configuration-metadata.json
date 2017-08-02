@@ -1,0 +1,20 @@
+{
+  "groups": [
+    {
+      "name": "dg",
+      "type": "com.dg.locationinfo.Configs.AppConfiguration",
+      "sourceType": "com.dg.locationinfo.Configs.AppConfiguration"
+    }
+  ],
+  "properties": [
+    {
+      "name": "dg.appSecret",
+      "type": "java.lang.String",
+      "description": "appSecret of facebook OAuth2 - ! DO NOT SHARE IT WITH ANYONE !."
+    },
+    {
+      "name": "dg.appID",
+      "type": "java.lang.String",
+      "description": "appId of facebook OAuth2."
+    }
+  ] }

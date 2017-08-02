@@ -4,15 +4,21 @@ buildscript {
 	}
 	repositories {
 		mavenCentral()
+        maven { url 'http://repo.spring.io/plugins-release' }
 	}
 	dependencies {
 		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath 'io.spring.gradle:propdeps-plugin:0.0.9.RELEASE'
 	}
 }
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'propdeps'
+apply plugin: 'propdeps-maven'
+apply plugin: 'propdeps-idea'
+apply plugin: 'propdeps-eclipse'
 
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = 1.8
@@ -26,5 +32,9 @@ dependencies {
 	compile('org.springframework.boot:spring-boot-starter-social-facebook')
 	compile('org.springframework.boot:spring-boot-starter-web')
 	compile('com.restfb:restfb:1.41.0')
-	testCompile('org.springframework.boot:spring-boot-starter-test')
+    optional "org.springframework.boot:spring-boot-configuration-processor"
+
+    testCompile('org.springframework.boot:spring-boot-starter-test')
 }
+
+compileJava.dependsOn(processResources)

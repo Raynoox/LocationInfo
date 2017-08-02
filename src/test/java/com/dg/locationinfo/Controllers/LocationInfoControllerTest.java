@@ -1,9 +1,11 @@
 package com.dg.locationinfo.Controllers;
 
-import com.dg.locationinfo.LocationinfoApplication;
+import com.dg.locationinfo.LocationInfoApplication;
 import com.dg.locationinfo.Models.LocationInfo;
+import com.dg.locationinfo.Services.ClientConnectionService;
 import com.dg.locationinfo.Services.LocationProviderService;
 import com.dg.locationinfo.TestDataBuilders.LocationInfoBuilder;
+import com.restfb.DefaultFacebookClient;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,6 +19,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.nio.charset.Charset;
+import java.util.Arrays;
 import java.util.Collections;
 
 import static org.hamcrest.Matchers.hasSize;
@@ -29,7 +32,7 @@ import static org.springframework.test.web.servlet.setup.MockMvcBuilders.webAppC
 
 @RunWith(SpringRunner.class)
 @WebAppConfiguration
-@SpringBootTest(classes = LocationinfoApplication.class)
+@SpringBootTest(classes = LocationInfoApplication.class)
 public class LocationInfoControllerTest {
 
     private final MediaType contentType = new MediaType(MediaType.APPLICATION_JSON.getType(),
@@ -43,8 +46,15 @@ public class LocationInfoControllerTest {
     private final String NAME = "PUT poznan";
     private final Double LATITUDE = 52.491234567;
     private final Double LONGITUDE = 16.991234567;
+
+    private final String SECOND_NAME = "PUT poznan 2";
+    private final Double SECOND_LATITUDE = 52.491234567;
+    private final Double SECOND_LONGITUDE = 16.991234567;
+
     @MockBean
     private LocationProviderService locationServiceMock;
+    @MockBean
+    private ClientConnectionService<DefaultFacebookClient> facebookConnectionService;
 
     @Autowired
     private WebApplicationContext wac;
@@ -55,19 +65,38 @@ public class LocationInfoControllerTest {
     }
 
     @Test
-    public void testEgnyteLocationInformation() throws Exception {
-        when(locationServiceMock.getLocationInformation(COUNTRY, CITY, DESCRIPTION)).thenReturn(Collections.singletonList(getLocationInfo()));
+    public void testLocationInformation() throws Exception {
+        when(locationServiceMock.getLocationInformation(COUNTRY, CITY, DESCRIPTION)).thenReturn(Collections.singletonList(Collections.singletonList(getLocationInfo())));
         mockMvc.perform((get("/"+ COUNTRY +"/"+ CITY +"/"+ DESCRIPTION)))
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(contentType))
                 .andExpect(jsonPath("$").value(hasSize(1)))
-                .andExpect(jsonPath("$[0].name").value(NAME))
-                .andExpect(jsonPath("$[0].latitude").value(LATITUDE))
-                .andExpect(jsonPath("$[0].longitude").value(LONGITUDE));
+                .andExpect(jsonPath("$[0]").value(hasSize(1)))
+                .andExpect(jsonPath("$[0].[0].name").value(NAME))
+                .andExpect(jsonPath("$[0].[0].latitude").value(LATITUDE))
+                .andExpect(jsonPath("$[0].[0].longitude").value(LONGITUDE));
         verify(locationServiceMock, times(1)).getLocationInformation(COUNTRY, CITY, DESCRIPTION);
         verifyNoMoreInteractions(locationServiceMock);
     }
 
+    @Test
+    public void testMultipleCitiesInformation() throws Exception {
+        when(locationServiceMock.getLocationInformation(COUNTRY, CITY, DESCRIPTION))
+                .thenReturn(Arrays.asList(Collections.singletonList(getLocationInfo()),
+                        Collections.singletonList(getAlternativeLocationInfo())));
+        mockMvc.perform((get("/"+ COUNTRY +"/"+ CITY +"/"+ DESCRIPTION)))
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(contentType))
+                .andExpect(jsonPath("$").value(hasSize(2)))
+                .andExpect(jsonPath("$[0]").value(hasSize(1)))
+                .andExpect(jsonPath("$[0].[0].name").value(NAME))
+                .andExpect(jsonPath("$[0].[0].latitude").value(LATITUDE))
+                .andExpect(jsonPath("$[0].[0].longitude").value(LONGITUDE))
+                .andExpect(jsonPath("$[1]").value(hasSize(1)))
+                .andExpect(jsonPath("$[1].[0].name").value(SECOND_NAME))
+                .andExpect(jsonPath("$[1].[0].latitude").value(SECOND_LATITUDE))
+                .andExpect(jsonPath("$[1].[0].longitude").value(SECOND_LONGITUDE));
+    }
     @Test
     public void testNoneFoundReturnsEmpty() throws Exception {
         when(locationServiceMock.getLocationInformation(CITY, COUNTRY, DESCRIPTION)).thenReturn(Collections.emptyList());
@@ -82,6 +111,9 @@ public class LocationInfoControllerTest {
 
     private LocationInfo getLocationInfo() {
         return new LocationInfoBuilder().withName(NAME).withLatitude(LATITUDE).withLongitude(LONGITUDE).build();
+    }
+    private LocationInfo getAlternativeLocationInfo() {
+        return new LocationInfoBuilder().withName(SECOND_NAME).withLatitude(SECOND_LATITUDE).withLongitude(SECOND_LONGITUDE).build();
     }
 
 }
