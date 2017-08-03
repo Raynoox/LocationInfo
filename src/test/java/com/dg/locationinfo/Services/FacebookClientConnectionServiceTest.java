@@ -34,7 +34,7 @@ public class FacebookClientConnectionServiceTest {
     @MockBean
     private ClientConnectionService<DefaultFacebookClient> facebookConnectionService;
 
-    @Value("${dg.appID}")
+    @Value("${dg.appId}")
     private String CORRECT_APP_ID;
     @Value("${dg.appSecret}")
     private String CORRECT_APP_SECRET;
